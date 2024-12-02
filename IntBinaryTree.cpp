@@ -1,6 +1,8 @@
 // Implementation file for the IntBinaryTree class
 #include <iostream>
 #include "IntBinaryTree.h"
+#include <string>
+
 using namespace std;
 
 // insert accepts a TreeNode pointer and a pointer to a node.
@@ -15,14 +17,13 @@ void IntBinaryTree::insert(TreeNode *&nodePtr, TreeNode *&newNode) {
       insert(nodePtr->right, newNode);    // Search the right branch
 }
 
-// insertNode creates a new node to hold num as its value,
-// and passes it to the insert function.                  
-void IntBinaryTree::insertNode(int num) {
+// insertNode creates a new node to hold value,           
+void IntBinaryTree::insertNode(const string& value) {
    TreeNode *newNode;      // Pointer to a new node.
 
-   // Create a new node and store num in it.
+   // Create a new node and store value in it.
    newNode = new TreeNode;
-   newNode->value = num;
+   newNode->value = value;
    newNode->left = newNode->right = nullptr;
    
    // Insert the node.
@@ -33,25 +34,22 @@ void IntBinaryTree::insertNode(int num) {
 // deletes all nodes in the tree.                
 void IntBinaryTree::destroySubTree(TreeNode *nodePtr) {
    if (nodePtr) {
-      if (nodePtr->left)
-         destroySubTree(nodePtr->left);
-      if (nodePtr->right)
-         destroySubTree(nodePtr->right);
+      destroySubTree(nodePtr->left);
+      destroySubTree(nodePtr->right);
       delete nodePtr;
    }
 }
    
-
 // searchNode determines if a value is present in  
 // the tree. If so, the function returns true.     
 // Otherwise, it returns false.                    
-bool IntBinaryTree::searchNode(int num) {
+bool IntBinaryTree::searchNode(const string& value) const {
    TreeNode *nodePtr = root;
 
-   while (nodePtr)    {
-      if (nodePtr->value == num)
+   while (nodePtr) {
+      if (nodePtr->value == value)
          return true;
-      else if (num < nodePtr->value)
+      else if (value < nodePtr->value)
          nodePtr = nodePtr->left;
       else
          nodePtr = nodePtr->right;
@@ -59,23 +57,23 @@ bool IntBinaryTree::searchNode(int num) {
    return false;
 }
 
-// remove calls deleteNode to delete the      
-// node whose value member is the same as num.
-void IntBinaryTree::remove(int num) {
-   deleteNode(num, root);
+
+void IntBinaryTree::remove(const string& value) {
+   deleteNode(value, root);
 }
 
 // deleteNode deletes the node whose value 
-// member is the same as num.              
-void IntBinaryTree::deleteNode(int num, TreeNode *&nodePtr) {
-   if (num < nodePtr->value)
-      deleteNode(num, nodePtr->left);
-   else if (num > nodePtr->value)
-      deleteNode(num, nodePtr->right);
+// member is the same as value.              
+void IntBinaryTree::deleteNode(const string& value, TreeNode *&nodePtr) {
+   if (!nodePtr)
+      return;
+   if (value < nodePtr->value)
+      deleteNode(value, nodePtr->left);
+   else if (value > nodePtr->value)
+      deleteNode(value, nodePtr->right);
    else
       makeDeletion(nodePtr);
 }
-
 
 // makeDeletion takes a reference to a pointer to the node 
 // that is to be deleted. The node is removed and the      
@@ -98,9 +96,9 @@ void IntBinaryTree::makeDeletion(TreeNode *&nodePtr) {
    }
    // If the node has two children.
    else {
-      // Move one node the right.
+      // Move one node to the right.
       tempNodePtr = nodePtr->right;
-      // Go to the end left node.
+      // Go to the leftmost node in the right subtree.
       while (tempNodePtr->left)
          tempNodePtr = tempNodePtr->left;
       // Reattach the left subtree.
