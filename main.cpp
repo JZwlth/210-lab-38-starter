@@ -9,6 +9,26 @@ void displayMenu();
 void processChoice(IntBinaryTree &tree);
 
 int main() {
+    IntBinaryTree tree;
+    ifstream inputFile("codes.txt");
+    string code;
+
+    if (!inputFile) {
+        cout << "Error opening codes.txt file." << endl;
+        return 1;
+    }
+
+    // Read codes.txt and populate the tree
+    while (getline(inputFile, code)) {
+        tree.insertNode(code);
+    }
+
+    inputFile.close();
+
+    processChoice(tree);
+
+    return 0;
+}
 
 void displayMenu() {
     cout << "\nMenu Options:" << endl;
@@ -31,8 +51,7 @@ void processChoice(IntBinaryTree &tree) {
     do {
         displayMenu();
         cin >> choice;
-        cin.ignore(); // Ignore newline character after integer input
-
+        cin.ignore(); 
         switch (choice) {
             case 1:
                 cout << "Enter code to add: ";
@@ -53,8 +72,13 @@ void processChoice(IntBinaryTree &tree) {
             case 3:
                 cout << "Enter code to search: ";
                 getline(cin, code);
-
-         case 4:
+                if (tree.searchNode(code)) {
+                    cout << "Code found in the tree." << endl;
+                } else {
+                    cout << "Code not found." << endl;
+                }
+                break;
+            case 4:
                 cout << "Enter code to modify: ";
                 getline(cin, code);
                 if (tree.searchNode(code)) {
@@ -71,7 +95,20 @@ void processChoice(IntBinaryTree &tree) {
                 cout << "Codes in In-Order traversal:" << endl;
                 tree.displayInOrder();
                 break;
-            case 
+            case 6:
+                cout << "Codes in Pre-Order traversal:" << endl;
+                tree.displayPreOrder();
+                break;
+            case 7:
+                cout << "Codes in Post-Order traversal:" << endl;
+                tree.displayPostOrder();
+                break;
+            case 8:
+                cout << "Exiting program." << endl;
+                break;
+            default:
+                cout << "Invalid choice. Please select from the menu." << endl;
+        }
 
-    return 0;
-};
+    } while (choice != 8);
+}
